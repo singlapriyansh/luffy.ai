@@ -878,6 +878,8 @@
     // =========================================================================
     // 1. STATE, INDEXEDDB VAULT & CONFIGURATION
     // =========================================================================
+    // Optional default Gemini API key for standalone/teacher project demos (restrict by HTTP referrer in Google Cloud)
+    const DEFAULT_GEMINI_API_KEY = "";
     const runtimeApiKey = typeof __api_key !== 'undefined' ? __api_key : "";
     const GEMINI_MODELS = [
       "gemini-3-flash-preview",
@@ -1159,7 +1161,7 @@ CRITICAL ACCURACY RULE:
     function getActiveApiKey() {
       const settings = getLocalSettings();
       const userKey = (settings.customApiKey || localStorage.getItem('luffy_gear5_api_key') || '').trim();
-      return userKey || runtimeApiKey || "";
+      return userKey || runtimeApiKey || (DEFAULT_GEMINI_API_KEY || '').trim() || "";
     }
 
     // =========================================================================
