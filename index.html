@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUFFY AI • Gear 5</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Marked.js for clean Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Highlight.js for Code Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            gearWhite: '#f8fafc',
+            gearPurple: '#c084fc',
+            gearGold: '#fde047',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbars for ChatGPT Aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Full-Screen Background Cover Scaling for YouTube Iframe & Video */
+    .video-bg-wrapper {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -20;
+      pointer-events: none;
+      background: #07060d;
+    }
+
+    .video-bg-wrapper iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 56.25vw; /* 16:9 Aspect Ratio */
+      min-height: 100vh;
+      min-width: 177.77vh; /* 16:9 Aspect Ratio */
+      transform: translate(-50%, -50%) scale(1.06); /* Slight scale to hide edge watermarks */
+      object-fit: cover;
+      border: 0;
+      z-index: 1;
+    }
+
+    /* Fullscreen Centered Photo & Video Wallpaper Elements */
+    #localVideoBg,
+    #customImageBg {
+      position: fixed;
+      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      transform: none;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 1;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Fallback Animated Gear 5 Aura (visible while iframe loads or if blocked) */
+    @keyframes drumsPulse {
+      0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.65;
+      }
+      50% {
+        transform: scale(1.12) rotate(4deg);
+        opacity: 0.95;
+      }
+    }
+
+    @keyframes cloudDrift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .gear5-fallback-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 35%, rgba(233, 213, 255, 0.25), rgba(126, 34, 206, 0.18) 38%, rgba(9, 9, 15, 0.96) 80%);
+      animation: drumsPulse 6s ease-in-out infinite;
+    }
+
+    .gear5-smoke-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      background: linear-gradient(
+        180deg,
+        rgba(10, 10, 16, 0.68) 0%,
+        rgba(12, 10, 20, 0.62) 50%,
+        rgba(8, 8, 13, 0.84) 100%
+      );
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+    }
+
+    /* Markdown Typography Styling */
+    .markdown-body {
+      line-height: 1.68;
+      font-size: 0.96rem;
+      color: #f1f5f9;
+      word-wrap: break-word;
+    }
+    .markdown-body p {
+      margin-bottom: 0.85rem;
+    }
+    .markdown-body p:last-child {
+      margin-bottom: 0;
+    }
+    .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+      font-weight: 600;
+      color: #ffffff;
+      margin-top: 1.25rem;
+      margin-bottom: 0.6rem;
+    }
+    .markdown-body h1 { font-size: 1.35rem; }
+    .markdown-body h2 { font-size: 1.18rem; }
+    .markdown-body h3 { font-size: 1.05rem; }
+    .markdown-body ul, .markdown-body ol {
+      padding-left: 1.4rem;
+      margin-bottom: 0.85rem;
+    }
+    .markdown-body ul { list-style-type: disc; }
+    .markdown-body ol { list-style-type: decimal; }
+    .markdown-body li { margin-bottom: 0.35rem; }
+    .markdown-body strong { color: #fef08a; font-weight: 600; }
+    .markdown-body a { color: #d8b4fe; text-decoration: underline; }
+    .markdown-body blockquote {
+      border-left: 3px solid #c084fc;
+      padding-left: 0.9rem;
+      color: #cbd5e1;
+      font-style: italic;
+      margin: 0.75rem 0;
+    }
+    .markdown-body code:not(pre code) {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fde047;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.375rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+    .markdown-body pre {
+      position: relative;
+      background: rgba(13, 15, 23, 0.92) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin: 0.9rem 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.9rem 0;
+      font-size: 0.9rem;
+    }
+    .markdown-body th, .markdown-body td {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .markdown-body th {
+      background: rgba(255, 255, 255, 0.08);
+      font-weight: 600;
+    }
+
+    /* Typing Indicator Dots */
+    .dot-flashing {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dot-flashing span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #e9d5ff;
+      animation: dotPulse 1.4s infinite ease-in-out both;
+    }
+    .dot-flashing span:nth-child(1) { animation-delay: -0.32s; }
+    .dot-flashing span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { transform: scale(0.4); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Gear 5 Sun Ring Glow */
+    .sun-god-glow {
+      box-shadow: 0 0 24px rgba(216, 180, 254, 0.35), 0 0 48px rgba(253, 224, 71, 0.15);
+    }
+  </style>
+</head>
+<body class="text-slate-100 font-sans antialiased selection:bg-purple-500/40 selection:text-white overflow-hidden h-screen w-screen flex">
+
+  <!-- FULLSCREEN BACKGROUND LAYER -->
+  <div class="video-bg-wrapper" id="bgContainer">
+    <!-- Fallback Animated Gear 5 Canvas/Gradient -->
+    <div class="gear5-fallback-bg" id="fallbackBg"></div>
+
+    <!-- YouTube Embed Iframe (ID: nhr0igKYIMQ) -->
+    <iframe
+      id="ytBackground"
+      src="https://www.youtube.com/embed/nhr0igKYIMQ?autoplay=1&mute=1&loop=1&playlist=nhr0igKYIMQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1"
+      title="Luffy Gear 5 Background"
+      allow="autoplay; encrypted-media; fullscreen"
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+
+    <!-- Local Custom Video Fallback (Hidden until user uploads a local video) -->
+    <video id="localVideoBg" class="hidden" autoplay loop muted playsinline></video>
+
+    <!-- Global Custom Image Wallpaper (Hidden until image wallpaper is active) -->
+    <img id="customImageBg" class="hidden" alt="Custom Gear 5 Wallpaper" />
+  </div>
+
+  <!-- Translucent Dark Glassmorphic Readability Overlay -->
+  <div class="gear5-smoke-overlay" id="glassOverlay"></div>
+
+  <!-- Optional Custom Local Audio Player (Hidden element) -->
+  <audio id="localAudioPlayer" loop preload="auto" crossorigin="anonymous"></audio>
+
+  <!-- MOBILE SIDEBAR BACKDROP -->
+  <div
+    id="mobileSidebarBackdrop"
+    onclick="toggleSidebar(false)"
+    class="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 hidden md:hidden transition-opacity"
+  ></div>
+
+  <!-- LEFT COLLAPSIBLE SIDEBAR (ChatGPT Style) -->
+  <aside
+    id="sidebar"
+    class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-zinc-950/75 backdrop-blur-xl border-r border-white/10 flex flex-col transition-all duration-300 ease-in-out -translate-x-full md:translate-x-0 shrink-0"
+  >
+    <!-- Sidebar Top: Brand & New Chat -->
+    <div class="p-3.5 flex items-center justify-between gap-2 border-b border-white/10">
+      <button
+        onclick="createNewChat()"
+        class="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 active:scale-[0.99] text-sm font-medium text-white border border-white/10 transition-all shadow-sm"
+      >
+        <i data-lucide="plus" class="w-4 h-4 text-yellow-300"></i>
+        <span>New Chat</span>
+      </button>
+
+      <button
+        onclick="toggleSidebar()"
+        title="Close Sidebar"
+        class="p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+      >
+        <i data-lucide="panel-left-close" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Chat History List -->
+    <div class="flex-1 overflow-y-auto px-2.5 py-3 space-y-1" id="chatHistoryList">
+      <!-- Populated dynamically via JS -->
+    </div>
+
+    <!-- Sidebar Bottom: Media & Atmosphere Controls -->
+    <div class="p-3 border-t border-white/10 bg-black/30 space-y-2.5 text-xs">
+      <div class="flex items-center justify-between text-slate-400 px-1 font-medium uppercase tracking-wider text-[10px]">
+        <span>Drums of Liberation • Media</span>
+        <span id="audioStatusBadge" class="text-purple-300">Muted</span>
+      </div>
+
+      <!-- Sound Toggle & Custom Media Buttons -->
+      <div class="grid grid-cols-2 gap-1.5">
+        <button
+          id="sidebarMuteBtn"
+          onclick="toggleBackgroundAudio()"
+          class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-slate-200 transition-all"
+        >
+          <i id="sidebarMuteIcon" data-lucide="volume-x" class="w-3.5 h-3.5 text-purple-300"></i>
+          <span id="sidebarMuteLabel">Unmute BG</span>
+        </button>
+
+        <button
+          onclick="openMediaModal()"
+          class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-slate-200 transition-all"
+        >
+          <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-yellow-300"></i>
+          <span>Media / BG</span>
+        </button>
+      </div>
+
+      <!-- Persona Badge -->
+      <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-gradient-to-r from-purple-500/15 to-yellow-400/10 border border-white/10">
+        <div class="w-8 h-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-bold text-sm shadow-md shrink-0 sun-god-glow">
+          ☀
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="text-xs font-semibold text-white truncate">Monkey D. Luffy (Gear 5)</div>
+          <div class="text-[11px] text-purple-200/80 truncate">Sun God Nika • Freedom Mode</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CHAT AREA -->
+  <main class="flex-1 flex flex-col h-full min-w-0 relative z-20 pointer-events-auto">
+
+    <!-- Subtle Glassmorphic Top Header -->
+    <header class="h-14 px-4 flex items-center justify-between border-b border-white/10 bg-zinc-950/35 backdrop-blur-md shrink-0 z-20">
+      <div class="flex items-center gap-2.5">
+        <button
+          id="openSidebarBtn"
+          onclick="toggleSidebar()"
+          title="Open Sidebar"
+          class="p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+        >
+          <i data-lucide="panel-left" class="w-5 h-5"></i>
+        </button>
+
+        <div class="flex items-center gap-2 select-none">
+          <span class="font-semibold tracking-tight text-base text-white flex items-center gap-2">
+            LUFFY AI
+            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-white/15 text-yellow-200 border border-white/15 backdrop-blur-xs">
+              Gear 5
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Top Right Quick Controls -->
+      <div class="flex items-center gap-2">
+        <!-- Quick Audio Toggle -->
+        <button
+          id="headerMuteBtn"
+          onclick="toggleBackgroundAudio()"
+          title="Toggle Background Video/Music Audio"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-medium text-white transition-all backdrop-blur-md"
+        >
+          <i id="headerMuteIcon" data-lucide="volume-x" class="w-3.5 h-3.5 text-yellow-300"></i>
+          <span id="headerMuteText" class="hidden sm:inline">Unmute Drums</span>
+        </button>
+
+        <!-- Custom Media / Overlay Settings Button -->
+        <button
+          onclick="openMediaModal()"
+          title="Background & Audio Settings"
+          class="p-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-slate-200 hover:text-white transition-all"
+        >
+          <i data-lucide="sparkles" class="w-4 h-4 text-purple-300"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Message Thread -->
+    <div id="chatScrollContainer" class="flex-1 overflow-y-auto px-4 sm:px-6 pt-6 pb-8 scroll-smooth">
+      <div id="chatContainer" class="max-w-3xl mx-auto w-full space-y-6">
+
+        <!-- Empty State / Welcome Hero (Shown when thread has no messages) -->
+        <div id="welcomeScreen" class="flex flex-col items-center justify-center text-center pt-8 sm:pt-14 pb-6 px-2 animate-fadeIn">
+          <div class="w-16 h-16 rounded-full bg-white/95 text-zinc-950 flex items-center justify-center text-3xl shadow-xl sun-god-glow mb-5 border-2 border-purple-300/60">
+            ☀
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2 drop-shadow">
+            Shishishi! What do you wanna ask?
+          </h1>
+          <p class="text-sm sm:text-base text-slate-300 max-w-lg mb-8 leading-relaxed">
+            I’m at my absolute peak! Ask me anything—coding, science, stories, math, or life advice—and I’ll give you real answers while the Drums of Liberation beat!
+          </p>
+
+          <!-- Starter Prompt Pills -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl text-left">
+            <button
+              onclick="useStarterPrompt('Explain quantum computing like I am part of the Straw Hat crew, then give me a real technical summary!')"
+              class="group p-3.5 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/75 backdrop-blur-md border border-white/10 hover:border-purple-400/40 transition-all shadow-sm"
+            >
+              <div class="text-sm font-medium text-white group-hover:text-yellow-200 transition-colors flex items-center justify-between">
+                <span>Explain Quantum Computing</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">Straw Hat analogy + real technical breakdown</div>
+            </button>
+
+            <button
+              onclick="useStarterPrompt('Write a clean, modern Python script to fetch weather data from an API with error handling.')"
+              class="group p-3.5 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/75 backdrop-blur-md border border-white/10 hover:border-purple-400/40 transition-all shadow-sm"
+            >
+              <div class="text-sm font-medium text-white group-hover:text-yellow-200 transition-colors flex items-center justify-between">
+                <span>Write a Python API Script</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">Production-ready code with clear explanation</div>
+            </button>
+
+            <button
+              onclick="useStarterPrompt('Give me a high-protein meat lover meal plan for muscle recovery and energy!')"
+              class="group p-3.5 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/75 backdrop-blur-md border border-white/10 hover:border-purple-400/40 transition-all shadow-sm"
+            >
+              <div class="text-sm font-medium text-white group-hover:text-yellow-200 transition-colors flex items-center justify-between">
+                <span>Pirate King Protein Meal Plan</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">Sanji-approved nutrition & macros</div>
+            </button>
+
+            <button
+              onclick="useStarterPrompt('Help me brainstorm 5 creative web app ideas I can build this weekend.')"
+              class="group p-3.5 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/75 backdrop-blur-md border border-white/10 hover:border-purple-400/40 transition-all shadow-sm"
+            >
+              <div class="text-sm font-medium text-white group-hover:text-yellow-200 transition-colors flex items-center justify-between">
+                <span>Weekend Web App Ideas</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">Fun, practical projects with tech stacks</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages get appended here -->
+        <div id="messagesList" class="space-y-6"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Pill-Shaped Input Bar (ChatGPT Style) -->
+    <div class="shrink-0 relative z-30 bg-gradient-to-t from-zinc-950/95 via-zinc-950/75 to-transparent pt-3 pb-4 px-4 sm:px-6 pointer-events-auto">
+      <div class="max-w-3xl mx-auto w-full pointer-events-auto">
+        <form
+          id="chatForm"
+          onsubmit="handleFormSubmit(event)"
+          class="relative flex items-end gap-2 bg-zinc-900/85 backdrop-blur-xl border border-white/15 focus-within:border-purple-400/60 rounded-3xl px-3.5 py-2.5 shadow-2xl transition-all"
+        >
+          <!-- Voice Input Mic Button (Web Speech API) -->
+          <button
+            type="button"
+            id="micBtn"
+            onclick="toggleVoiceInput()"
+            title="Voice Input"
+            class="p-2.5 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition-all shrink-0 mb-0.5"
+          >
+            <i id="micIcon" data-lucide="mic" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Auto-expanding Textarea -->
+          <textarea
+            id="promptInput"
+            rows="1"
+            placeholder="Message Luffy Gear 5..."
+            class="w-full bg-transparent text-white placeholder-slate-400 text-sm sm:text-base resize-none focus:outline-none py-2 max-h-40 leading-relaxed pointer-events-auto"
+            oninput="autoResizeTextarea(this)"
+            onkeydown="handleInputKeydown(event)"
+          ></textarea>
+
+          <!-- Send Button -->
+          <button
+            type="submit"
+            id="sendBtn"
+            title="Send Message"
+            class="p-2.5 rounded-full bg-white text-zinc-950 hover:bg-yellow-200 disabled:opacity-40 disabled:hover:bg-white transition-all shrink-0 mb-0.5 shadow-md"
+          >
+            <i data-lucide="arrow-up" class="w-5 h-5 stroke-[2.5]"></i>
+          </button>
+        </form>
+
+        <div class="text-center mt-2 text-[11px] text-slate-400/90">
+          Luffy Gear 5 AI • Powered by Gemini • Responses are joyful yet accurate
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MEDIA & BACKGROUND CUSTOMIZATION MODAL -->
+  <div
+    id="mediaModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+  >
+    <div class="bg-zinc-900/95 border border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 text-sm max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2 font-semibold text-base text-white">
+          <i data-lucide="tv" class="w-5 h-5 text-purple-400"></i>
+          <span>Global Background & Drums Audio</span>
+        </div>
+        <button onclick="closeMediaModal()" class="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Cloud Sync Status Pill -->
+      <div class="flex flex-col gap-1.5 px-3.5 py-2.5 rounded-2xl bg-purple-500/10 border border-purple-400/25 text-xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-purple-200">
+            <i data-lucide="cloud" class="w-4 h-4 text-purple-300 shrink-0"></i>
+            <span id="cloudSyncStatusText">Checking persistence...</span>
+          </div>
+          <label class="flex items-center gap-1.5 cursor-pointer select-none shrink-0 ml-2" title="Save uploads globally so every device and account gets them automatically">
+            <input type="checkbox" id="saveGlobalToggle" checked class="accent-purple-400 w-3.5 h-3.5 cursor-pointer" />
+            <span class="text-yellow-200 font-medium">Global Default</span>
+          </label>
+        </div>
+        <div id="localPersistenceBadge" class="text-[11px] text-emerald-300/90 flex items-center gap-1.5">
+          <i data-lucide="hard-drive" class="w-3.5 h-3.5 shrink-0"></i>
+          <span>Browser Vault Ready (Survives Preview Close & Reload)</span>
+        </div>
+      </div>
+
+      <!-- Upload Progress Bar (Hidden unless uploading) -->
+      <div id="uploadProgressWrapper" class="hidden space-y-1.5">
+        <div class="flex justify-between text-xs text-slate-300">
+          <span id="uploadProgressLabel">Uploading to cloud...</span>
+          <span id="uploadProgressPercent" class="font-mono text-yellow-300">0%</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+          <div id="uploadProgressBar" class="h-full bg-gradient-to-r from-purple-400 to-yellow-300 transition-all duration-200" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- YouTube Background Controls -->
+      <div class="space-y-2">
+        <label class="block text-xs font-medium uppercase tracking-wider text-slate-400">
+          YouTube Background Video (nhr0igKYIMQ)
+        </label>
+        <div class="flex gap-2">
+          <button
+            onclick="toggleBackgroundAudio()"
+            class="flex-1 py-2.5 px-3 rounded-xl bg-purple-600/30 hover:bg-purple-600/45 border border-purple-400/30 text-white font-medium flex items-center justify-center gap-2 transition-all"
+          >
+            <i data-lucide="volume-2" class="w-4 h-4 text-yellow-300"></i>
+            <span>Toggle Mute / Unmute</span>
+          </button>
+          <button
+            onclick="restoreDefaultYouTube()"
+            class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-slate-200 transition-all"
+            title="Reset global default back to YouTube video"
+          >
+            Reset YT
+          </button>
+        </div>
+      </div>
+
+      <!-- Audio Volume Slider -->
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-slate-400 font-medium uppercase tracking-wider">Background Music Volume</span>
+          <span id="audioVolumeVal" class="text-yellow-300 font-mono">80%</span>
+        </div>
+        <input
+          type="range"
+          id="audioVolumeSlider"
+          min="0"
+          max="100"
+          value="80"
+          oninput="updateAudioVolume(this.value)"
+          class="w-full accent-yellow-300 cursor-pointer"
+        />
+      </div>
+
+      <!-- Overlay Dimness Slider -->
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-slate-400 font-medium uppercase tracking-wider">Overlay Darkness (Readability)</span>
+          <span id="overlayOpacityVal" class="text-yellow-300 font-mono">68%</span>
+        </div>
+        <input
+          type="range"
+          id="overlayOpacitySlider"
+          min="20"
+          max="92"
+          value="68"
+          oninput="updateOverlayOpacity(this.value, true)"
+          class="w-full accent-purple-400 cursor-pointer"
+        />
+      </div>
+
+      <!-- Upload Custom Photo OR Video Wallpaper -->
+      <div class="space-y-2">
+        <label class="block text-xs font-medium uppercase tracking-wider text-slate-400">
+          Global Wallpaper Photo or Video (.jpg, .png, .webp, .mp4, .webm)
+        </label>
+        <label class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-dashed border-white/20 cursor-pointer text-slate-200 transition-all">
+          <i data-lucide="image" class="w-4 h-4 text-purple-300"></i>
+          <span id="wallpaperFileName" class="truncate max-w-[260px]">Upload Photo or Video Wallpaper</span>
+          <input type="file" accept="image/*,video/*" class="hidden" onchange="handleWallpaperUpload(event)" />
+        </label>
+      </div>
+
+      <!-- Upload Custom MP3 / Drums Track -->
+      <div class="space-y-2">
+        <label class="block text-xs font-medium uppercase tracking-wider text-slate-400">
+          Global Background Song / MP3 Track
+        </label>
+        <label class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-dashed border-white/20 cursor-pointer text-slate-200 transition-all">
+          <i data-lucide="music" class="w-4 h-4 text-yellow-300"></i>
+          <span id="audioFileName" class="truncate max-w-[260px]">Upload MP3 / Audio Track</span>
+          <input type="file" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)" />
+        </label>
+      </div>
+
+      <!-- Optional Gemini API Key (For Standalone External Deployment) -->
+      <div class="space-y-2 pt-1 border-t border-white/10">
+        <label for="customApiKeyInput" class="block text-xs font-medium uppercase tracking-wider text-slate-400">
+          Gemini API Key (Optional for Standalone Hosting)
+        </label>
+        <input
+          type="password"
+          id="customApiKeyInput"
+          placeholder="Leave blank in preview, or paste AIza... key"
+          oninput="saveCustomApiKey(this.value)"
+          class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400/60"
+        />
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button
+          onclick="closeMediaModal()"
+          class="px-5 py-2 rounded-xl bg-white text-zinc-950 font-semibold hover:bg-yellow-200 transition-all"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION BANNER -->
+  <div
+    id="toastBanner"
+    class="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-zinc-900/95 border border-white/15 text-xs text-white shadow-xl backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300"
+  ></div>
+
+  <!-- FIREBASE CLOUD SYNC MODULE (Auth, Firestore, Storage) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+
+    window.cloudMediaBridge = {
+      ready: false,
+      db: null,
+      storage: null,
+      auth: null,
+      appId: typeof __app_id !== 'undefined' ? __app_id : 'default-app-id',
+      currentConfig: {
+        mediaType: 'youtube', // 'youtube' | 'image' | 'video'
+        wallpaperUrl: '',
+        wallpaperName: '',
+        audioUrl: '',
+        audioName: '',
+        overlayOpacity: 68
+      }
+    };
+
+    async function initFirebaseCloudSync() {
+      const statusEl = document.getElementById('cloudSyncStatusText');
+      try {
+        if (typeof __firebase_config === 'undefined') {
+          if (statusEl) statusEl.textContent = 'Local session mode (Cloud config unavailable)';
+          return;
+        }
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // RULE 3: Authenticate BEFORE any Firestore or Storage queries
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        if (!auth.currentUser) return;
+
+        window.cloudMediaBridge.auth = auth;
+        window.cloudMediaBridge.db = db;
+        window.cloudMediaBridge.storage = storage;
+        window.cloudMediaBridge.ready = true;
+
+        if (statusEl) {
+          statusEl.textContent = 'Connected: Uploads sync globally to all devices!';
+        }
+
+        // RULE 1: Strict public path /artifacts/{appId}/public/data/{collectionName}/{docId}
+        const globalMediaDocRef = doc(
+          db,
+          'artifacts',
+          window.cloudMediaBridge.appId,
+          'public',
+          'data',
+          'global_media',
+          'default'
+        );
+
+        // Real-time listener so every device & account receives the saved song & wallpaper
+        onSnapshot(
+          globalMediaDocRef,
+          (snapshot) => {
+            if (!snapshot.exists()) {
+              // Firestore is empty — if we have local IndexedDB blobs and Global Default is checked, auto-sync them up!
+              if (typeof window.autoSyncLocalVaultToCloud === 'function') {
+                window.autoSyncLocalVaultToCloud();
+              }
+              return;
+            }
+            const data = snapshot.data();
+            const prevConfig = window.cloudMediaBridge.currentConfig || {};
+
+            // Non-destructive merge: NEVER let empty cloud fields wipe out existing local IndexedDB/cached media
+            const hasCloudWallpaper = Boolean(data.wallpaperUrl && data.mediaType && data.mediaType !== 'youtube');
+            const hasCloudAudio = Boolean(data.audioUrl);
+            const explicitResetToYt = data.mediaType === 'youtube' && data.explicitReset === true;
+
+            const nextConfig = {
+              ...prevConfig,
+              ...data
+            };
+
+            if (!hasCloudWallpaper && !explicitResetToYt && prevConfig.wallpaperUrl) {
+              nextConfig.mediaType = prevConfig.mediaType;
+              nextConfig.wallpaperUrl = prevConfig.wallpaperUrl;
+              nextConfig.wallpaperName = prevConfig.wallpaperName;
+            }
+            if (!hasCloudAudio && !explicitResetToYt && prevConfig.audioUrl) {
+              nextConfig.audioUrl = prevConfig.audioUrl;
+              nextConfig.audioName = prevConfig.audioName;
+            }
+
+            const mediaChanged =
+              prevConfig.mediaType !== nextConfig.mediaType ||
+              prevConfig.wallpaperUrl !== nextConfig.wallpaperUrl ||
+              prevConfig.audioUrl !== nextConfig.audioUrl ||
+              prevConfig.wallpaperName !== nextConfig.wallpaperName ||
+              prevConfig.audioName !== nextConfig.audioName;
+
+            window.cloudMediaBridge.currentConfig = nextConfig;
+
+            // Cache remote URLs in localStorage so reloads load immediately even before snapshot
+            if (typeof window.persistSettingsToLocalStorage === 'function') {
+              window.persistSettingsToLocalStorage({
+                ...(hasCloudWallpaper ? {
+                  mediaType: data.mediaType,
+                  remoteWallpaperUrl: data.wallpaperUrl,
+                  wallpaperName: data.wallpaperName || ''
+                } : {}),
+                ...(hasCloudAudio ? {
+                  remoteAudioUrl: data.audioUrl,
+                  audioName: data.audioName || ''
+                } : {}),
+                ...(typeof data.overlayOpacity === 'number' ? { overlayOpacity: data.overlayOpacity } : {})
+              });
+            }
+
+            // Only update CSS overlay opacity if media URLs/types haven't changed (prevents resetting media when readability changes)
+            if (!mediaChanged) {
+              if (typeof nextConfig.overlayOpacity === 'number' && typeof window.updateOverlayOpacity === 'function') {
+                const slider = document.getElementById('overlayOpacitySlider');
+                if (slider && document.activeElement !== slider) {
+                  slider.value = nextConfig.overlayOpacity;
+                }
+                window.updateOverlayOpacity(nextConfig.overlayOpacity, false);
+              }
+              return;
+            }
+
+            if (typeof window.applyGlobalMediaConfig === 'function') {
+              window.applyGlobalMediaConfig(nextConfig);
+            }
+          },
+          (error) => {
+            console.warn('Global media listener warning:', error);
+            if (statusEl) {
+              statusEl.textContent = 'Cloud listener paused; Browser Vault active.';
+            }
+          }
+        );
+
+        // Upload file to Firebase Storage and update global Firestore document
+        window.cloudMediaBridge.uploadAndSaveGlobal = function (file, category, onProgress) {
+          return new Promise((resolve, reject) => {
+            if (!auth.currentUser) {
+              reject(new Error('Not authenticated'));
+              return;
+            }
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+            const storagePath = `artifacts/${window.cloudMediaBridge.appId}/public/media/${category}_${Date.now()}_${safeName}`;
+            const storageRef = ref(storage, storagePath);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on(
+              'state_changed',
+              (snapshot) => {
+                const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                if (onProgress) onProgress(pct);
+              },
+              (err) => reject(err),
+              async () => {
+                try {
+                  const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                  const updates = { explicitReset: false };
+                  if (category === 'wallpaper') {
+                    updates.mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+                    updates.wallpaperUrl = downloadUrl;
+                    updates.wallpaperName = file.name;
+                  } else if (category === 'audio') {
+                    updates.audioUrl = downloadUrl;
+                    updates.audioName = file.name;
+                  }
+                  updates.updatedAt = Date.now();
+
+                  await setDoc(globalMediaDocRef, updates, { merge: true });
+                  resolve(downloadUrl);
+                } catch (saveErr) {
+                  reject(saveErr);
+                }
+              }
+            );
+          });
+        };
+
+        // Save partial settings (such as overlay darkness or resetting to YouTube)
+        window.cloudMediaBridge.updateGlobalSettings = async function (updates) {
+          if (!auth.currentUser) return;
+          await setDoc(
+            globalMediaDocRef,
+            { ...updates, updatedAt: Date.now() },
+            { merge: true }
+          );
+        };
+      } catch (err) {
+        console.warn('Firebase init fallback:', err);
+        if (statusEl) {
+          statusEl.textContent = 'Using Browser Vault persistence';
+        }
+      }
+    }
+
+    initFirebaseCloudSync();
+  </script>
+
+  <script>
+    // =========================================================================
+    // 1. STATE, INDEXEDDB VAULT & CONFIGURATION
+    // =========================================================================
+    const runtimeApiKey = typeof __api_key !== 'undefined' ? __api_key : "";
+    const GEMINI_MODELS = [
+      "gemini-3-flash-preview",
+      "gemini-3.5-flash-lite",
+      "gemini-3.8-flash",
+      "gemini-2.5-flash"
+    ];
+
+    const LOCAL_SETTINGS_KEY = 'luffy_g5_settings_v2';
+    const IDB_NAME = 'LuffyGear5MediaDB';
+    const IDB_STORE = 'mediaBlobs';
+
+    const LUFFY_SYSTEM_PROMPT = `You are Monkey D. Luffy in Gear 5 (Awakened Sun God Nika form), acting as a super helpful, brilliant AI assistant!
+Personality & Tone:
+- You are joyful, carefree, energetic, and full of freedom ("Shishishi!", "Aha! Let's do this!", "My heart's beating like drums!").
+- Occasionally weave in subtle, fun One Piece / Gear 5 flavor (mentioning meat, freedom, adventure, Nakama, or the Drums of Liberation), WITHOUT letting it get in the way of clarity.
+CRITICAL ACCURACY RULE:
+- Despite your playful Luffy Gear 5 personality, you MUST ALWAYS provide genuinely accurate, thorough, well-structured, and directly helpful answers to whatever the user asks (whether it's programming, math, science, writing, analysis, or general knowledge).
+- Format technical answers cleanly using Markdown headings, bullet points, and properly fenced code blocks.`;
+
+    let chats = JSON.parse(localStorage.getItem('luffy_gear5_chats') || '[]');
+    let currentChatId = null;
+    let isGenerating = false;
+    let isBgMuted = true;
+    let usingCustomWallpaper = false;
+    let usingCustomAudio = false;
+    let currentWallpaperSrc = '';
+    let currentAudioSrc = '';
+    let pendingAutoplayAudio = false;
+    let recognition = null;
+    let isRecording = false;
+    let overlaySaveTimeout = null;
+    let hasAutoSyncedLocalVault = false;
+
+    // IndexedDB Helper Functions for Persistent Wallpaper & Audio Blobs
+    function openMediaVaultDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('IndexedDB unavailable'));
+          return;
+        }
+        const request = indexedDB.open(IDB_NAME, 1);
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE);
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function saveBlobToVault(key, blobOrFile, meta = {}) {
+      const db = await openMediaVaultDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        const store = tx.objectStore(IDB_STORE);
+        store.put({
+          blob: blobOrFile,
+          name: meta.name || blobOrFile.name || key,
+          type: meta.type || blobOrFile.type || '',
+          savedAt: Date.now()
+        }, key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function loadBlobFromVault(key) {
+      const db = await openMediaVaultDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readonly');
+        const store = tx.objectStore(IDB_STORE);
+        const req = store.get(key);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function clearVaultBlobs() {
+      try {
+        const db = await openMediaVaultDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          const store = tx.objectStore(IDB_STORE);
+          store.delete('wallpaperBlob');
+          store.delete('audioBlob');
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch (e) {
+        console.warn('Could not clear IndexedDB blobs:', e);
+      }
+    }
+
+    function getLocalSettings() {
+      try {
+        return JSON.parse(localStorage.getItem(LOCAL_SETTINGS_KEY) || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    window.persistSettingsToLocalStorage = function (partialUpdates) {
+      try {
+        const current = getLocalSettings();
+        const merged = { ...current, ...partialUpdates };
+        localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(merged));
+        updatePersistenceBadgeUI(merged);
+        return merged;
+      } catch (e) {
+        console.warn('Could not persist settings to localStorage:', e);
+        return {};
+      }
+    };
+
+    function updatePersistenceBadgeUI(settings = getLocalSettings()) {
+      const badgeEl = document.getElementById('localPersistenceBadge');
+      if (!badgeEl) return;
+      const hasWp = settings.hasLocalWallpaperBlob || settings.remoteWallpaperUrl;
+      const hasAud = settings.hasLocalAudioBlob || settings.remoteAudioUrl;
+      if (hasWp || hasAud) {
+        const parts = [];
+        if (hasWp) parts.push('Wallpaper');
+        if (hasAud) parts.push('Song');
+        badgeEl.innerHTML = `<i data-lucide="hard-drive" class="w-3.5 h-3.5 shrink-0"></i><span>Saved in Browser Vault (${parts.join(' & ')}) • Survives Reloads</span>`;
+      } else {
+        badgeEl.innerHTML = `<i data-lucide="hard-drive" class="w-3.5 h-3.5 shrink-0"></i><span>Browser Vault Ready (Survives Preview Close & Reload)</span>`;
+      }
+      lucide.createIcons();
+    }
+
+    // Configure Marked.js with Highlight.js
+    marked.setOptions({
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
+      },
+      breaks: true,
+      gfm: true
+    });
+
+    // =========================================================================
+    // 2. INITIALIZATION & INSTANT LOCAL HYDRATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      initSpeechRecognition();
+      setupFirstInteractionAutoplay();
+
+      const savedSettings = getLocalSettings();
+
+      // Restore API key (check v2 settings first, then legacy key)
+      const savedKey = savedSettings.customApiKey || localStorage.getItem('luffy_gear5_api_key') || '';
+      const keyInput = document.getElementById('customApiKeyInput');
+      if (keyInput && savedKey) keyInput.value = savedKey;
+
+      // Restore saved overlay darkness immediately
+      if (typeof savedSettings.overlayOpacity === 'number') {
+        const overlaySlider = document.getElementById('overlayOpacitySlider');
+        if (overlaySlider) overlaySlider.value = savedSettings.overlayOpacity;
+        updateOverlayOpacity(savedSettings.overlayOpacity, false);
+      }
+
+      // Restore saved audio volume immediately
+      const localAudio = document.getElementById('localAudioPlayer');
+      const savedVol = typeof savedSettings.audioVolume === 'number' ? savedSettings.audioVolume : 80;
+      const volSlider = document.getElementById('audioVolumeSlider');
+      if (volSlider) volSlider.value = savedVol;
+      updateAudioVolume(savedVol, false);
+
+      // Hydrate Wallpaper & Audio from IndexedDB Vault (and remote URL cache fallback) BEFORE Firebase connects
+      await hydrateMediaFromLocalVault(savedSettings);
+
+      if (chats.length > 0) {
+        loadChat(chats[0].id);
+      } else {
+        createNewChat(false);
+      }
+      renderSidebarHistory();
+    });
+
+    async function hydrateMediaFromLocalVault(savedSettings) {
+      let hydratedWallpaperUrl = '';
+      let hydratedMediaType = savedSettings.mediaType || 'youtube';
+      let hydratedWallpaperName = savedSettings.wallpaperName || '';
+      let hydratedAudioUrl = '';
+      let hydratedAudioName = savedSettings.audioName || '';
+
+      try {
+        if (savedSettings.hasLocalWallpaperBlob) {
+          const wpRecord = await loadBlobFromVault('wallpaperBlob');
+          if (wpRecord && wpRecord.blob) {
+            hydratedWallpaperUrl = URL.createObjectURL(wpRecord.blob);
+            hydratedMediaType = wpRecord.type && wpRecord.type.startsWith('video/') ? 'video' : (savedSettings.mediaType || 'image');
+            hydratedWallpaperName = wpRecord.name || hydratedWallpaperName;
+          }
+        }
+        if (!hydratedWallpaperUrl && savedSettings.remoteWallpaperUrl) {
+          hydratedWallpaperUrl = savedSettings.remoteWallpaperUrl;
+        }
+
+        if (savedSettings.hasLocalAudioBlob) {
+          const audRecord = await loadBlobFromVault('audioBlob');
+          if (audRecord && audRecord.blob) {
+            hydratedAudioUrl = URL.createObjectURL(audRecord.blob);
+            hydratedAudioName = audRecord.name || hydratedAudioName;
+          }
+        }
+        if (!hydratedAudioUrl && savedSettings.remoteAudioUrl) {
+          hydratedAudioUrl = savedSettings.remoteAudioUrl;
+        }
+      } catch (err) {
+        console.warn('IndexedDB hydration fallback to cached remote URLs:', err);
+        hydratedWallpaperUrl = savedSettings.remoteWallpaperUrl || '';
+        hydratedAudioUrl = savedSettings.remoteAudioUrl || '';
+      }
+
+      const initialConfig = {
+        mediaType: hydratedWallpaperUrl ? hydratedMediaType : 'youtube',
+        wallpaperUrl: hydratedWallpaperUrl,
+        wallpaperName: hydratedWallpaperName,
+        audioUrl: hydratedAudioUrl,
+        audioName: hydratedAudioName,
+        overlayOpacity: typeof savedSettings.overlayOpacity === 'number' ? savedSettings.overlayOpacity : 68
+      };
+
+      if (window.cloudMediaBridge) {
+        window.cloudMediaBridge.currentConfig = { ...initialConfig };
+      }
+
+      if (hydratedWallpaperUrl || hydratedAudioUrl) {
+        applyGlobalMediaConfig(initialConfig);
+      }
+      updatePersistenceBadgeUI(savedSettings);
+    }
+
+    // If local IndexedDB has media and Firestore is empty on connect, auto-sync to cloud
+    window.autoSyncLocalVaultToCloud = async function () {
+      if (hasAutoSyncedLocalVault) return;
+      const saveGlobal = document.getElementById('saveGlobalToggle')?.checked;
+      if (!saveGlobal || !window.cloudMediaBridge?.ready) return;
+
+      const settings = getLocalSettings();
+      if (!settings.hasLocalWallpaperBlob && !settings.hasLocalAudioBlob) return;
+
+      hasAutoSyncedLocalVault = true;
+      try {
+        if (settings.hasLocalWallpaperBlob) {
+          const wpRecord = await loadBlobFromVault('wallpaperBlob');
+          if (wpRecord && wpRecord.blob) {
+            const fileObj = new File([wpRecord.blob], wpRecord.name || 'wallpaper', { type: wpRecord.type || 'image/png' });
+            const url = await window.cloudMediaBridge.uploadAndSaveGlobal(fileObj, 'wallpaper');
+            window.persistSettingsToLocalStorage({ remoteWallpaperUrl: url });
+          }
+        }
+        if (settings.hasLocalAudioBlob) {
+          const audRecord = await loadBlobFromVault('audioBlob');
+          if (audRecord && audRecord.blob) {
+            const fileObj = new File([audRecord.blob], audRecord.name || 'song.mp3', { type: audRecord.type || 'audio/mpeg' });
+            const url = await window.cloudMediaBridge.uploadAndSaveGlobal(fileObj, 'audio');
+            window.persistSettingsToLocalStorage({ remoteAudioUrl: url });
+          }
+        }
+      } catch (e) {
+        console.warn('Auto-sync local vault to cloud skipped:', e);
+      }
+    };
+
+    function saveCustomApiKey(val) {
+      const trimmed = (val || '').trim();
+      localStorage.setItem('luffy_gear5_api_key', trimmed);
+      window.persistSettingsToLocalStorage({ customApiKey: trimmed });
+    }
+
+    function getActiveApiKey() {
+      const settings = getLocalSettings();
+      const userKey = (settings.customApiKey || localStorage.getItem('luffy_gear5_api_key') || '').trim();
+      return userKey || runtimeApiKey || "";
+    }
+
+    // =========================================================================
+    // 3. CHAT THREAD MANAGEMENT & SIDEBAR UI
+    // =========================================================================
+    function saveChatsToStorage() {
+      try {
+        localStorage.setItem('luffy_gear5_chats', JSON.stringify(chats));
+      } catch (e) {
+        console.warn('Could not persist chats:', e);
+      }
+    }
+
+    function createNewChat(shouldFocus = true) {
+      const newChat = {
+        id: 'chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        title: 'New Adventure',
+        messages: [],
+        updatedAt: Date.now()
+      };
+      chats.unshift(newChat);
+      currentChatId = newChat.id;
+      saveChatsToStorage();
+      renderSidebarHistory();
+      renderMessages();
+
+      if (window.innerWidth < 768) {
+        toggleSidebar(false);
+      }
+      if (shouldFocus) {
+        const input = document.getElementById('promptInput');
+        if (input) input.focus();
+      }
+    }
+
+    function loadChat(chatId) {
+      const found = chats.find(c => c.id === chatId);
+      if (!found) return;
+      currentChatId = found.id;
+      renderSidebarHistory();
+      renderMessages();
+      if (window.innerWidth < 768) {
+        toggleSidebar(false);
+      }
+    }
+
+    function deleteChat(event, chatId) {
+      event.stopPropagation();
+      chats = chats.filter(c => c.id !== chatId);
+      if (currentChatId === chatId) {
+        if (chats.length > 0) {
+          currentChatId = chats[0].id;
+        } else {
+          createNewChat(false);
+          return;
+        }
+      }
+      saveChatsToStorage();
+      renderSidebarHistory();
+      renderMessages();
+    }
+
+    function renderSidebarHistory() {
+      const listEl = document.getElementById('chatHistoryList');
+      if (!listEl) return;
+
+      if (chats.length === 0) {
+        listEl.innerHTML = `<div class="text-xs text-slate-400 px-3 py-4 text-center">No adventures yet!</div>`;
+        return;
+      }
+
+      listEl.innerHTML = chats.map(chat => {
+        const isActive = chat.id === currentChatId;
+        return `
+          <div
+            onclick="loadChat('${chat.id}')"
+            class="group flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl cursor-pointer text-sm transition-all ${
+              isActive
+                ? 'bg-white/15 text-white font-medium border border-white/15 shadow-sm'
+                : 'text-slate-300 hover:bg-white/10 hover:text-white'
+            }"
+          >
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <i data-lucide="message-square" class="w-4 h-4 shrink-0 ${isActive ? 'text-yellow-300' : 'text-slate-400'}"></i>
+              <span class="truncate">${escapeHtml(chat.title || 'New Adventure')}</span>
+            </div>
+            <button
+              onclick="deleteChat(event, '${chat.id}')"
+              title="Delete Chat"
+              class="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-300 transition-all"
+            >
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function toggleSidebar(forceState) {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('mobileSidebarBackdrop');
+      if (!sidebar) return;
+
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        const shouldOpen = typeof forceState === 'boolean'
+          ? forceState
+          : sidebar.classList.contains('-translate-x-full');
+
+        if (shouldOpen) {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop?.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          backdrop?.classList.add('hidden');
+        }
+      } else {
+        const shouldShow = typeof forceState === 'boolean'
+          ? forceState
+          : sidebar.classList.contains('hidden');
+
+        if (shouldShow) {
+          sidebar.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('hidden');
+        }
+      }
+    }
+
+    // =========================================================================
+    // 4. MESSAGE RENDERING & INPUT HANDLING
+    // =========================================================================
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function autoResizeTextarea(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+    }
+
+    function handleInputKeydown(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        handleFormSubmit(event);
+      }
+    }
+
+    function useStarterPrompt(text) {
+      const input = document.getElementById('promptInput');
+      if (!input) return;
+      input.value = text;
+      autoResizeTextarea(input);
+      sendMessage(text);
+    }
+
+    function handleFormSubmit(event) {
+      if (event) event.preventDefault();
+      const input = document.getElementById('promptInput');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text || isGenerating) return;
+      sendMessage(text);
+    }
+
+    function renderMessages(showTyping = false) {
+      const welcomeScreen = document.getElementById('welcomeScreen');
+      const messagesList = document.getElementById('messagesList');
+      const scrollContainer = document.getElementById('chatScrollContainer');
+      const currentChat = chats.find(c => c.id === currentChatId);
+
+      if (!messagesList || !welcomeScreen) return;
+
+      if (!currentChat || (currentChat.messages.length === 0 && !showTyping)) {
+        welcomeScreen.classList.remove('hidden');
+        messagesList.innerHTML = '';
+        return;
+      }
+
+      welcomeScreen.classList.add('hidden');
+
+      let html = currentChat.messages.map((msg, idx) => {
+        if (msg.role === 'user') {
+          return `
+            <div class="flex justify-end animate-fadeIn">
+              <div class="max-w-[85%] sm:max-w-[75%] rounded-3xl rounded-br-md px-4 py-3 bg-purple-600/35 border border-purple-400/30 backdrop-blur-md text-white text-sm sm:text-base leading-relaxed shadow-lg whitespace-pre-wrap">${escapeHtml(msg.text)}</div>
+            </div>
+          `;
+        } else {
+          const renderedMd = marked.parse(msg.text || '');
+          return `
+            <div class="flex items-start gap-3.5 animate-fadeIn">
+              <div class="w-9 h-9 rounded-full bg-white text-zinc-950 flex items-center justify-center font-bold text-base shadow-md shrink-0 sun-god-glow mt-0.5">
+                ☀
+              </div>
+              <div class="flex-1 min-w-0 rounded-3xl rounded-tl-md px-4 sm:px-5 py-3.5 bg-zinc-900/75 border border-white/10 backdrop-blur-md shadow-xl">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <span class="text-xs font-semibold text-yellow-200 tracking-wide">Luffy • Gear 5</span>
+                  <button
+                    onclick="copyMessageText(${idx})"
+                    title="Copy response"
+                    class="text-xs text-slate-400 hover:text-white flex items-center gap-1 px-2 py-0.5 rounded-lg hover:bg-white/10 transition-colors"
+                  >
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Copy</span>
+                  </button>
+                </div>
+                <div class="markdown-body">${renderedMd}</div>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      if (showTyping) {
+        html += `
+          <div class="flex items-start gap-3.5">
+            <div class="w-9 h-9 rounded-full bg-white text-zinc-950 flex items-center justify-center font-bold text-base shadow-md shrink-0 sun-god-glow mt-0.5">
+              ☀
+            </div>
+            <div class="rounded-3xl rounded-tl-md px-5 py-4 bg-zinc-900/75 border border-white/10 backdrop-blur-md shadow-xl flex items-center gap-3">
+              <div class="dot-flashing"><span></span><span></span><span></span></div>
+              <span class="text-xs text-purple-200">Drums of Liberation beating...</span>
+            </div>
+          </div>
+        `;
+      }
+
+      messagesList.innerHTML = html;
+      enhanceCodeBlocks();
+      lucide.createIcons();
+
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+
+    function enhanceCodeBlocks() {
+      document.querySelectorAll('#messagesList pre').forEach(pre => {
+        if (pre.querySelector('.copy-code-btn')) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'copy-code-btn absolute top-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] text-slate-200 font-sans transition-colors';
+        btn.textContent = 'Copy code';
+        btn.onclick = () => {
+          const code = pre.querySelector('code')?.innerText || pre.innerText;
+          copyTextFallback(code);
+          btn.textContent = 'Copied!';
+          setTimeout(() => { btn.textContent = 'Copy code'; }, 1800);
+        };
+        pre.appendChild(btn);
+      });
+    }
+
+    function copyMessageText(msgIndex) {
+      const currentChat = chats.find(c => c.id === currentChatId);
+      if (!currentChat || !currentChat.messages[msgIndex]) return;
+      copyTextFallback(currentChat.messages[msgIndex].text);
+      showToast('Response copied to clipboard!');
+    }
+
+    function copyTextFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      document.body.removeChild(textarea);
+    }
+
+    // =========================================================================
+    // 5. GEMINI API INTEGRATION WITH MODEL FALLBACKS
+    // =========================================================================
+    async function callGeminiWithFallback(conversationHistory) {
+      const activeKey = getActiveApiKey();
+      const contents = conversationHistory.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.text }]
+      }));
+
+      const payload = {
+        contents,
+        systemInstruction: {
+          parts: [{ text: LUFFY_SYSTEM_PROMPT }]
+        }
+      };
+
+      let lastError = null;
+
+      for (const model of GEMINI_MODELS) {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(activeKey)}`;
+        let delay = 800;
+
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (response.status === 404 || response.status === 400) {
+              const errData = await response.json().catch(() => ({}));
+              lastError = new Error(errData?.error?.message || `Model ${model} unavailable (${response.status})`);
+              break; // Try next fallback model immediately
+            }
+
+            if (response.status === 429 || response.status >= 500) {
+              await new Promise(r => setTimeout(r, delay));
+              delay *= 2;
+              continue;
+            }
+
+            if (!response.ok) {
+              const errData = await response.json().catch(() => ({}));
+              throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+            const replyText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (replyText) {
+              return replyText;
+            }
+            throw new Error('Empty response from Gemini');
+          } catch (err) {
+            lastError = err;
+          }
+        }
+      }
+
+      throw lastError || new Error('Unable to reach Gemini API');
+    }
+
+    async function sendMessage(userText) {
+      if (isGenerating) return;
+      const text = (userText || '').trim();
+      if (!text) return;
+
+      let currentChat = chats.find(c => c.id === currentChatId);
+      if (!currentChat) {
+        createNewChat(false);
+        currentChat = chats.find(c => c.id === currentChatId);
+      }
+
+      // Set chat title from first user message
+      if (currentChat.messages.length === 0) {
+        currentChat.title = text.length > 36 ? text.slice(0, 36) + '...' : text;
+      }
+
+      currentChat.messages.push({ role: 'user', text });
+      currentChat.updatedAt = Date.now();
+      saveChatsToStorage();
+      renderSidebarHistory();
+
+      const input = document.getElementById('promptInput');
+      const sendBtn = document.getElementById('sendBtn');
+      if (input) {
+        input.value = '';
+        autoResizeTextarea(input);
+      }
+
+      isGenerating = true;
+      if (sendBtn) sendBtn.disabled = true;
+      renderMessages(true);
+
+      try {
+        const aiReply = await callGeminiWithFallback(currentChat.messages);
+        currentChat.messages.push({ role: 'assistant', text: aiReply });
+        currentChat.updatedAt = Date.now();
+        saveChatsToStorage();
+      } catch (err) {
+        const isAuthError = /api key|permission|403|401|unauthenticated/i.test(err.message || '');
+        const friendlyError = isAuthError
+          ? `Shishishi! Looks like we need a valid **Gemini API Key** to sail outside the preview environment! Click **Media / BG** (the sparkles icon in the top-right) and paste your Gemini API key at the bottom, then try again!\n\n*(Details: ${err.message})*`
+          : `Whoa! Hit a rough wave on the Grand Line while trying to answer that! Try sending your message again in a moment.\n\n*(Details: ${err.message})*`;
+
+        currentChat.messages.push({ role: 'assistant', text: friendlyError });
+        saveChatsToStorage();
+      } finally {
+        isGenerating = false;
+        if (sendBtn) sendBtn.disabled = false;
+        renderMessages(false);
+        if (input) input.focus();
+      }
+    }
+
+    // Automatically unlock and start playing the global default audio on the user's very first tap/click/key anywhere
+    function setupFirstInteractionAutoplay() {
+      const unlockAudioOnFirstGesture = () => {
+        if (pendingAutoplayAudio && usingCustomAudio) {
+          const localAudio = document.getElementById('localAudioPlayer');
+          localAudio.muted = false;
+          localAudio.play()
+            .then(() => {
+              isBgMuted = false;
+              pendingAutoplayAudio = false;
+              updateAudioButtonsUI();
+              showToast('Playing global background song! 🎵');
+            })
+            .catch(() => {});
+        }
+        window.removeEventListener('pointerdown', unlockAudioOnFirstGesture);
+        window.removeEventListener('keydown', unlockAudioOnFirstGesture);
+      };
+
+      window.addEventListener('pointerdown', unlockAudioOnFirstGesture, { passive: true });
+      window.addEventListener('keydown', unlockAudioOnFirstGesture, { passive: true });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastBanner');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 2800);
+    }
+
+    // =========================================================================
+    // 6. BACKGROUND VIDEO, IMAGE & AUDIO CONTROLS (GLOBAL CLOUD + LOCAL)
+    // =========================================================================
+    window.applyGlobalMediaConfig = function (config) {
+      if (!config) return;
+
+      const ytIframe = document.getElementById('ytBackground');
+      const localVideo = document.getElementById('localVideoBg');
+      const customImg = document.getElementById('customImageBg');
+      const localAudio = document.getElementById('localAudioPlayer');
+
+      // 1. Apply Overlay Darkness if saved (CSS only, never touches media elements)
+      if (typeof config.overlayOpacity === 'number') {
+        const slider = document.getElementById('overlayOpacitySlider');
+        if (slider && document.activeElement !== slider) {
+          slider.value = config.overlayOpacity;
+        }
+        updateOverlayOpacity(config.overlayOpacity, false);
+      }
+
+      // 2. Apply Global Wallpaper (YouTube, Image, or Video)
+      const incomingType = config.mediaType || (config.wallpaperUrl ? 'image' : 'youtube');
+      const incomingWallpaperUrl = config.wallpaperUrl || '';
+
+      if (incomingType === 'image' && incomingWallpaperUrl) {
+        ytIframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: [] }), '*');
+        ytIframe.style.display = 'none';
+        ytIframe.classList.add('hidden');
+
+        localVideo.pause();
+        localVideo.style.display = 'none';
+        localVideo.classList.add('hidden');
+
+        if (currentWallpaperSrc !== incomingWallpaperUrl) {
+          customImg.src = incomingWallpaperUrl;
+          currentWallpaperSrc = incomingWallpaperUrl;
+        }
+        customImg.classList.remove('hidden');
+        customImg.style.display = 'block';
+        customImg.style.opacity = '1';
+        usingCustomWallpaper = true;
+
+        if (config.wallpaperName) {
+          document.getElementById('wallpaperFileName').textContent = config.wallpaperName;
+        }
+      } else if (incomingType === 'video' && incomingWallpaperUrl) {
+        ytIframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: [] }), '*');
+        ytIframe.style.display = 'none';
+        ytIframe.classList.add('hidden');
+
+        customImg.style.display = 'none';
+        customImg.classList.add('hidden');
+
+        if (currentWallpaperSrc !== incomingWallpaperUrl) {
+          localVideo.src = incomingWallpaperUrl;
+          currentWallpaperSrc = incomingWallpaperUrl;
+        }
+        localVideo.muted = usingCustomAudio || Boolean(config.audioUrl) ? true : isBgMuted;
+        localVideo.classList.remove('hidden');
+        localVideo.style.display = 'block';
+        localVideo.style.opacity = '1';
+        localVideo.play().catch(() => {});
+        usingCustomWallpaper = true;
+
+        if (config.wallpaperName) {
+          document.getElementById('wallpaperFileName').textContent = config.wallpaperName;
+        }
+      } else if (incomingType === 'youtube' && !incomingWallpaperUrl) {
+        customImg.style.display = 'none';
+        customImg.classList.add('hidden');
+        localVideo.pause();
+        localVideo.style.display = 'none';
+        localVideo.classList.add('hidden');
+
+        ytIframe.classList.remove('hidden');
+        ytIframe.style.display = 'block';
+        usingCustomWallpaper = false;
+        currentWallpaperSrc = '';
+        document.getElementById('wallpaperFileName').textContent = 'Upload Photo or Video Wallpaper';
+      }
+
+      // 3. Apply Global Background Song / Audio (Only update src if the URL actually changed)
+      const incomingAudioUrl = config.audioUrl || '';
+      if (incomingAudioUrl) {
+        // Mute video tracks so the global song plays cleanly
+        ytIframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: [] }), '*');
+        localVideo.muted = true;
+        usingCustomAudio = true;
+
+        if (config.audioName) {
+          document.getElementById('audioFileName').textContent = config.audioName;
+        }
+
+        if (currentAudioSrc !== incomingAudioUrl) {
+          localAudio.src = incomingAudioUrl;
+          currentAudioSrc = incomingAudioUrl;
+          localAudio.muted = false;
+          localAudio.play()
+            .then(() => {
+              isBgMuted = false;
+              pendingAutoplayAudio = false;
+              updateAudioButtonsUI();
+            })
+            .catch(() => {
+              localAudio.muted = true;
+              isBgMuted = true;
+              pendingAutoplayAudio = true;
+              updateAudioButtonsUI();
+            });
+        } else if (localAudio.paused && !isBgMuted) {
+          localAudio.play().catch(() => {});
+        }
+      } else if (config.audioUrl === '') {
+        // Only clear audio when explicitly reset to empty string
+        usingCustomAudio = false;
+        pendingAutoplayAudio = false;
+        currentAudioSrc = '';
+        localAudio.pause();
+        localAudio.removeAttribute('src');
+        document.getElementById('audioFileName').textContent = 'Upload MP3 / Audio Track';
+      }
+    };
+
+    function toggleBackgroundAudio() {
+      isBgMuted = !isBgMuted;
+      pendingAutoplayAudio = false;
+
+      const ytIframe = document.getElementById('ytBackground');
+      const localVideo = document.getElementById('localVideoBg');
+      const localAudio = document.getElementById('localAudioPlayer');
+
+      // 1. If custom/global MP3 track is loaded, control it
+      if (usingCustomAudio) {
+        localAudio.muted = isBgMuted;
+        if (!isBgMuted) {
+          localAudio.play().catch(() => {});
+        }
+      }
+
+      // 2. If custom video wallpaper is active, control its audio (unless custom MP3 overrides)
+      if (usingCustomWallpaper && !localVideo.classList.contains('hidden')) {
+        localVideo.muted = usingCustomAudio ? true : isBgMuted;
+        if (!isBgMuted && !usingCustomAudio) {
+          localVideo.play().catch(() => {});
+        }
+      } else if (!usingCustomAudio && !usingCustomWallpaper) {
+        // 3. Control YouTube Iframe via postMessage API
+        const command = isBgMuted ? 'mute' : 'unMute';
+        ytIframe.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: command, args: [] }),
+          '*'
+        );
+        if (!isBgMuted) {
+          ytIframe.contentWindow?.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
+            '*'
+          );
+        }
+      }
+
+      updateAudioButtonsUI();
+      showToast(isBgMuted ? 'Background audio muted' : 'Drums of Liberation unmuted! 🥁');
+    }
+
+    function updateAudioVolume(val, shouldPersist = true) {
+      const numericVal = Number(val);
+      document.getElementById('audioVolumeVal').textContent = `${numericVal}%`;
+      const normVol = Math.max(0, Math.min(1, numericVal / 100));
+      const localAudio = document.getElementById('localAudioPlayer');
+      const localVideo = document.getElementById('localVideoBg');
+      const ytIframe = document.getElementById('ytBackground');
+
+      localAudio.volume = normVol;
+      localVideo.volume = normVol;
+      ytIframe.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: 'setVolume', args: [numericVal] }),
+        '*'
+      );
+
+      if (shouldPersist && typeof window.persistSettingsToLocalStorage === 'function') {
+        window.persistSettingsToLocalStorage({ audioVolume: numericVal });
+      }
+    }
+
+    function updateAudioButtonsUI() {
+      const headerIcon = document.getElementById('headerMuteIcon');
+      const headerText = document.getElementById('headerMuteText');
+      const sidebarIcon = document.getElementById('sidebarMuteIcon');
+      const sidebarLabel = document.getElementById('sidebarMuteLabel');
+      const statusBadge = document.getElementById('audioStatusBadge');
+
+      const iconName = isBgMuted ? 'volume-x' : 'volume-2';
+      headerIcon.setAttribute('data-lucide', iconName);
+      sidebarIcon.setAttribute('data-lucide', iconName);
+
+      headerText.textContent = isBgMuted ? 'Unmute Drums' : 'Mute Drums';
+      sidebarLabel.textContent = isBgMuted ? 'Unmute BG' : 'Mute BG';
+      statusBadge.textContent = isBgMuted ? 'Muted' : 'Playing';
+      statusBadge.className = isBgMuted ? 'text-slate-400' : 'text-yellow-300 font-semibold';
+
+      lucide.createIcons();
+    }
+
+    function openMediaModal() {
+      const modal = document.getElementById('mediaModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeMediaModal() {
+      const modal = document.getElementById('mediaModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function updateOverlayOpacity(val, syncToCloud = false) {
+      const numericVal = Number(val);
+      document.getElementById('overlayOpacityVal').textContent = `${numericVal}%`;
+      const alpha = numericVal / 100;
+      const overlay = document.getElementById('glassOverlay');
+      // Only update CSS background overlay — never touch <video>, <img>, <iframe>, or <audio> elements
+      overlay.style.background = `linear-gradient(180deg, rgba(8,10,15,${alpha}) 0%, rgba(8,10,15,${Math.max(0.15, alpha - 0.06)}) 50%, rgba(8,10,15,${Math.min(0.96, alpha + 0.14)}) 100%)`;
+
+      if (window.cloudMediaBridge?.currentConfig) {
+        window.cloudMediaBridge.currentConfig.overlayOpacity = numericVal;
+      }
+
+      if (syncToCloud && typeof window.persistSettingsToLocalStorage === 'function') {
+        window.persistSettingsToLocalStorage({ overlayOpacity: numericVal });
+      }
+
+      const saveGlobal = document.getElementById('saveGlobalToggle')?.checked;
+      if (syncToCloud && saveGlobal && window.cloudMediaBridge?.ready) {
+        clearTimeout(overlaySaveTimeout);
+        overlaySaveTimeout = setTimeout(() => {
+          window.cloudMediaBridge.updateGlobalSettings({ overlayOpacity: numericVal }).catch(() => {});
+        }, 500);
+      }
+    }
+
+    function setUploadProgress(visible, label = '', percent = 0) {
+      const wrapper = document.getElementById('uploadProgressWrapper');
+      if (!visible) {
+        wrapper.classList.add('hidden');
+        return;
+      }
+      wrapper.classList.remove('hidden');
+      document.getElementById('uploadProgressLabel').textContent = label;
+      document.getElementById('uploadProgressPercent').textContent = `${percent}%`;
+      document.getElementById('uploadProgressBar').style.width = `${percent}%`;
+    }
+
+    async function handleWallpaperUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const saveGlobal = document.getElementById('saveGlobalToggle')?.checked;
+      const isVideo = file.type.startsWith('video/');
+      const mediaType = isVideo ? 'video' : 'image';
+
+      // 1. Save persistent Blob in IndexedDB + metadata in localStorage so it survives closing/reopening preview
+      try {
+        await saveBlobToVault('wallpaperBlob', file, { name: file.name, type: file.type });
+        window.persistSettingsToLocalStorage({
+          mediaType,
+          hasLocalWallpaperBlob: true,
+          wallpaperName: file.name
+        });
+      } catch (vaultErr) {
+        console.warn('IndexedDB wallpaper save warning:', vaultErr);
+      }
+
+      // 2. Instant local preview without touching audioUrl or restarting audio
+      const localUrl = URL.createObjectURL(file);
+      if (window.cloudMediaBridge?.currentConfig) {
+        window.cloudMediaBridge.currentConfig = {
+          ...window.cloudMediaBridge.currentConfig,
+          mediaType,
+          wallpaperUrl: localUrl,
+          wallpaperName: file.name
+        };
+      }
+
+      applyGlobalMediaConfig({
+        mediaType,
+        wallpaperUrl: localUrl,
+        wallpaperName: file.name
+      });
+
+      if (saveGlobal && window.cloudMediaBridge?.ready) {
+        try {
+          setUploadProgress(true, `Uploading wallpaper (${file.name})...`, 5);
+          const downloadUrl = await window.cloudMediaBridge.uploadAndSaveGlobal(file, 'wallpaper', (pct) => {
+            setUploadProgress(true, `Syncing wallpaper to all devices...`, pct);
+          });
+          if (window.cloudMediaBridge?.currentConfig) {
+            window.cloudMediaBridge.currentConfig.wallpaperUrl = downloadUrl;
+          }
+          window.persistSettingsToLocalStorage({ remoteWallpaperUrl: downloadUrl });
+          setUploadProgress(false);
+          showToast('Saved in Browser Vault & Cloud Global Default! 🌍');
+        } catch (err) {
+          setUploadProgress(false);
+          showToast('Saved in Browser Vault (survives preview close)! 💾');
+        }
+      } else {
+        showToast(`Saved wallpaper in Browser Vault: ${file.name} 💾`);
+      }
+    }
+
+    async function handleAudioUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const saveGlobal = document.getElementById('saveGlobalToggle')?.checked;
+
+      // 1. Save persistent Audio Blob in IndexedDB + metadata in localStorage
+      try {
+        await saveBlobToVault('audioBlob', file, { name: file.name, type: file.type });
+        window.persistSettingsToLocalStorage({
+          hasLocalAudioBlob: true,
+          audioName: file.name
+        });
+      } catch (vaultErr) {
+        console.warn('IndexedDB audio save warning:', vaultErr);
+      }
+
+      // 2. Instant local playback without touching wallpaperUrl
+      const localUrl = URL.createObjectURL(file);
+      const localAudio = document.getElementById('localAudioPlayer');
+      const ytIframe = document.getElementById('ytBackground');
+      const localVideo = document.getElementById('localVideoBg');
+
+      ytIframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: [] }), '*');
+      localVideo.muted = true;
+
+      localAudio.src = localUrl;
+      currentAudioSrc = localUrl;
+      usingCustomAudio = true;
+      isBgMuted = false;
+      pendingAutoplayAudio = false;
+      localAudio.muted = false;
+      localAudio.play().catch(() => {});
+
+      if (window.cloudMediaBridge?.currentConfig) {
+        window.cloudMediaBridge.currentConfig = {
+          ...window.cloudMediaBridge.currentConfig,
+          audioUrl: localUrl,
+          audioName: file.name
+        };
+      }
+
+      document.getElementById('audioFileName').textContent = file.name;
+      updateAudioButtonsUI();
+
+      if (saveGlobal && window.cloudMediaBridge?.ready) {
+        try {
+          setUploadProgress(true, `Uploading song (${file.name})...`, 5);
+          const downloadUrl = await window.cloudMediaBridge.uploadAndSaveGlobal(file, 'audio', (pct) => {
+            setUploadProgress(true, `Syncing song to all devices...`, pct);
+          });
+          // Update tracked URL so snapshot doesn't restart the already playing song
+          currentAudioSrc = downloadUrl;
+          if (window.cloudMediaBridge?.currentConfig) {
+            window.cloudMediaBridge.currentConfig.audioUrl = downloadUrl;
+          }
+          window.persistSettingsToLocalStorage({ remoteAudioUrl: downloadUrl });
+          setUploadProgress(false);
+          showToast('Saved song in Browser Vault & Global Default! 🎵🌍');
+        } catch (err) {
+          setUploadProgress(false);
+          showToast('Saved song in Browser Vault (survives preview close)! 🎵💾');
+        }
+      } else {
+        showToast(`Saved song in Browser Vault: ${file.name} 🎵💾`);
+      }
+    }
+
+    async function restoreDefaultYouTube() {
+      const ytIframe = document.getElementById('ytBackground');
+      const localVideo = document.getElementById('localVideoBg');
+      const customImg = document.getElementById('customImageBg');
+      const localAudio = document.getElementById('localAudioPlayer');
+
+      // Clear persistent IndexedDB blobs & localStorage media flags
+      await clearVaultBlobs();
+      window.persistSettingsToLocalStorage({
+        mediaType: 'youtube',
+        hasLocalWallpaperBlob: false,
+        hasLocalAudioBlob: false,
+        remoteWallpaperUrl: '',
+        remoteAudioUrl: '',
+        wallpaperName: '',
+        audioName: ''
+      });
+
+      localVideo.pause();
+      localVideo.style.display = 'none';
+      localVideo.classList.add('hidden');
+      customImg.style.display = 'none';
+      customImg.classList.add('hidden');
+      localAudio.pause();
+      localAudio.removeAttribute('src');
+
+      usingCustomWallpaper = false;
+      usingCustomAudio = false;
+      pendingAutoplayAudio = false;
+      currentWallpaperSrc = '';
+      currentAudioSrc = '';
+
+      ytIframe.classList.remove('hidden');
+      ytIframe.style.display = 'block';
+      const cmd = isBgMuted ? 'mute' : 'unMute';
+      ytIframe.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: cmd, args: [] }),
+        '*'
+      );
+
+      document.getElementById('wallpaperFileName').textContent = 'Upload Photo or Video Wallpaper';
+      document.getElementById('audioFileName').textContent = 'Upload MP3 / Audio Track';
+      updateAudioButtonsUI();
+
+      const saveGlobal = document.getElementById('saveGlobalToggle')?.checked;
+      if (saveGlobal && window.cloudMediaBridge?.ready) {
+        await window.cloudMediaBridge.updateGlobalSettings({
+          mediaType: 'youtube',
+          explicitReset: true,
+          wallpaperUrl: '',
+          wallpaperName: '',
+          audioUrl: '',
+          audioName: ''
+        }).catch(() => {});
+        showToast('Reset Browser Vault & global default to YouTube video!');
+      } else {
+        showToast('Restored YouTube Gear 5 background');
+      }
+    }
+
+    // =========================================================================
+    // 7. VOICE INPUT (WEB SPEECH API)
+    // =========================================================================
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        const micBtn = document.getElementById('micBtn');
+        micBtn.classList.add('bg-red-500/25', 'text-red-300', 'animate-pulse');
+        showToast('Listening... Speak now!');
+      };
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        const input = document.getElementById('promptInput');
+        input.value = transcript;
+        autoResizeTextarea(input);
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        const micBtn = document.getElementById('micBtn');
+        micBtn.classList.remove('bg-red-500/25', 'text-red-300', 'animate-pulse');
+      };
+
+      recognition.onerror = () => {
+        isRecording = false;
+        const micBtn = document.getElementById('micBtn');
+        micBtn.classList.remove('bg-red-500/25', 'text-red-300', 'animate-pulse');
+        showToast('Voice input unavailable or blocked.');
+      };
+    }
+
+    function toggleVoiceInput() {
+      if (!recognition) {
+        showToast('Speech recognition is not supported in this browser.');
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    }
+  </script>
+</body>
+</html>
